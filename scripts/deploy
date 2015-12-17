@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# TODO: check that image files exist in the web-site directory
+
+git branch -d gh-pages
+git checkout --orphan gh-pages
+
+# remove extra files not needed by the website
+git rm -r src --force
+git rm -r docs --force
+git rm -r osm-data --force
+git rm -r scripts --force
+git rm 'README.md' --force
+echo Try [matiasdahl.github.io/osm-tag-dynamics/](http://matiasdahl.github.io/osm-tag-dynamics/) > README.md
+git add README.md
+
+# move website in ./public to root
+git mv web-site/* .
+git mv web-site/images .
+
+git commit -m "Update of gh-pages"
+git push origin gh-pages
+git checkout master
