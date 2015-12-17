@@ -32,14 +32,18 @@ output_graphviz_file <- function(filename, e_am, e_live, df, copyright=T) {
         select(amenity_type, count, rank) %>%
         filter(rank <= top_nr_to_circle) %>%
         filter(amenity_type %in% amenities_to_draw) %>%
-        select(amenity_type, count)
+        select(amenity_type, count) %>%
+        # add norm_count = 1 as default.
+        mutate(norm_count = 1)
 
-    if (nrow(circle_data) > 0) {
+    # There needs to be at least two circles for the below normalization to work.
+    # Otherwise, we have already set norm_count = 1 above.
+    if (nrow(circle_data) > 1) {
         circle_data$norm_count <- sqrt(circle_data$count)
         circle_data$norm_count <- circle_data$norm_count - min(circle_data$norm_count)
         circle_data$norm_count <- circle_data$norm_count / max(circle_data$norm_count)
     }
-
+    
     normalized_count <- function(am_name) {
         tb <- filter(circle_data, amenity_type == am_name)
         stopifnot(nrow(tb) == 1)
@@ -114,11 +118,11 @@ output_graphviz_file <- function(filename, e_am, e_live, df, copyright=T) {
         }
     }
 
-    #  arrows between nodes
-    for (r in 1:nrow(df)) {
-        from_amenity <- df[[r, "from"]]
-        to_amenity <- df[[r, "to"]]
-        tcr <- df[[r, "leave_ratio"]]
+    # arrows between nodes
+    for (r in as.numeric(rownames(df))) {
+        from_amenity <- df$from[r]
+        to_amenity <- df$to[r]
+        tcr <- df$leave_ratio[r]
 
         cat(q0(from_amenity),
             ' -> ',
