@@ -32,3 +32,13 @@ python -m SimpleHTTPServer 8000
 ```
 
 and open `http://127.0.0.1:8000`.
+
+## Step 3: Update site footer
+
+In `web-site/index.html` update the "The data is from the dd.mm.yyyy OpenStreetMap export"-text.
+
+## Step 4: Deploy to gh packages
+
+```
+./scripts/deploy
+```
