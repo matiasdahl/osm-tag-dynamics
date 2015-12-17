@@ -1,0 +1,66 @@
+
+body {
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 18px;
+}
+
+#left-menu {
+  /* Based on:
+   *    https://github.com/ScoopThemes/Sidebar/blob/master/css/main.css
+   * CC0 license, ScoopThemes
+   */
+  left: 0;
+  top: 0;
+  position: fixed;
+  min-width: 280px;
+  height: 100%;
+  background-color: #eee;
+  overflow: scroll;
+}
+
+#left-menu h2 {
+  padding-top: 14px;
+  text-align: center;
+}
+
+#left-menu ul {
+  padding: 0px;
+  margin: 0px;
+}
+
+#left-menu .active {
+  background-color: #52DFA1;
+  color: #fafafa;
+}
+
+#left-menu li {
+  cursor: pointer;
+  color: #b6b6b6;
+  list-style: none;
+  padding: 10px 0px 10px 20px;
+  margin:  10px 0px 10px 0px;
+  width: 100%;
+}
+
+#right-area {
+  padding-left: 280px;
+}
+
+#right-area img{
+  padding-top: 24px;
+  padding-bottom: 24px;
+  width: 100%;
+}
+
+#image-footer {
+  color: #b6b6b6;
+  font-size: 18px;
+  padding: 0px 130px 10px 130px;
+}
+
+#image-footer a {
+  cursor: pointer;
+  color: #88BBDD;
+  text-decoration: none;
+  font-weight: bold;
+}
