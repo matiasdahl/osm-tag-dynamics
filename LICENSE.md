@@ -1,15 +1,19 @@
 
 # License
 
-The source files (the R and Rmd files in the `src` directory) and the associated
-documentation files (the md files in the `docs` directory) are released
-under the MIT license (see below).
+This repository contains both data extracted from the
+OpenStreetMap and source code. These are governed by different licenses.
 
-The data and images in the `osm-data`-directory are extracted/generated from
+The data in the `osm-data`-directory is extracted/generated from
 the OpenStreetMap project. This data is (c) OpenStreetMap contributors, and
-available under the [ODbL](https://www.openstreetmap.org/copyright). To be clear,
-any data, tables or images based on the OSM data are **not** released under
-the MIT license.
+available under the [ODbL](https://www.openstreetmap.org/copyright).
+
+The source codes and the associated documentation files (the md files) are
+released under the MIT license (see below).
+
+To be clear, any tables or data extracted from the OpenStreetMap are **not**
+released under the MIT license. In particular, the svg files and and the `am_data.txt`
+file required by the website are not placed under the MIT license. 
 
 ```
 Copyright (c) 2015, Matias Dahl
