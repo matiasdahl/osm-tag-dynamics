@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Note: the below assumes that the extracted data is in 
+# Note: the below assumes that the extracted data is in
 # the ~/temp-data/ directory
 #
 cd src
@@ -29,12 +29,14 @@ git add README.md
 mv ~/temp-data/web-data/am_data.txt .
 git add am_data.txt
 
-mv ~/temp-data/images .
+mkdir images
+mv ~/temp-data/images/*.svg images
 git add images/*.svg
 
 git mv web-site/index.html .
 git mv web-site/main.js .
 git mv web-site/style.css .
+git rm -r web-site --force
 
 git commit -m "Update of gh-pages"
 git push origin gh-pages
