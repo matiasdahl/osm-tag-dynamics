@@ -16,7 +16,7 @@ cd ..
 
 This assumes that R is installed with the required packages. It also assumes
 that the txt files unzipped in Step 1 are located in the
-directory `~/temp-data/osm-extract-2015-12-07/`.
+directory `~/temp-data/`.
 
 The above command should take around an hour on a first run. However, it will cache
 a number of computations (as rds files in the `src`-directory), and subsequent
@@ -37,7 +37,9 @@ and open `http://127.0.0.1:8000`.
 
 In `web-site/index.html` update the "The data is from the dd.mm.yyyy OpenStreetMap export"-text.
 
-## Step 4: Deploy to gh packages
+## Step 4: Deploy to gh pages
+
+Run:
 
 ```
 ./scripts/deploy

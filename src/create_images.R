@@ -15,13 +15,26 @@ require('scales')
 require('lubridate')
 require('dplyr')
 
+#  Determine input and output directories. The input directory should
+#  contain the files:
 #
-#  Directory containing the exported data:
 #     amenities-nodes.txt
 #     amenities-ways.txt
 #     amenities-relations.txt
 #
-dir_with_osm_data <- "~/temp-data/osm-extract-2015-12-07/"
+args <- commandArgs(TRUE)
+if (length(args) == 0) {
+  input_directory <- "~/temp-data/"
+  output_directory <- "../web-site/"
+} else if (length(args) == 2) {
+  input_directory <- args[1]
+  output_directory <- args[2]
+} else {
+  cat('Wrong number of arguments!\n')
+  quit()
+}
+cat('Reading OSM data from', input_directory, '\n')
+cat('Writing web-site data to', output_directory, '\n')
 
 cat(' - Loading e_am ...\n')
 #
@@ -30,7 +43,7 @@ cat(' - Loading e_am ...\n')
 source('amenity_counts.R')
 e_am <- cache_op('all_amenity_data.rds',
                  function() {
-                    load_amenity_data(dir_with_osm_data)
+                    load_amenity_data(input_directory)
                 })
 
 #
@@ -66,8 +79,8 @@ e_tr$leave_ratio_for <- function(a_tag, b_tag) {
 cat(' - Select tags to export ... \n')
 df <- e_live$live_am_table %>% filter(rank <= 100)
 
-cat(' - Writing web-site/am_data.txt ...\n')
-sink('../web-site/am_data.txt')
+cat(' - Writing ', output_directory, 'am_data.txt ...\n')
+sink(paste0(output_directory, 'am_data.txt'))
 for (i in 1:nrow(df)) {
    am_row <- df[i, "amenity_type"]
    am_count <- human_number(df[i, "count"])
@@ -93,13 +106,21 @@ extract_one <- function(e_am, e_live, e_tr, am_name, n_tre, leaveratio_treshold)
    rbind(df1, df2)
 }
 
+write_svg <- function(am_name, tmp_df) {
+  am_filename_svg <- paste0('osm-', am_name, '.svg')
+  am_filename_svg <- sub(';', '\\;', am_filename_svg, fixed=T)
+  cat('    ', output_directory, am_filename_svg, '\n', sep = '')
+  output_graphviz_file('temp.gv', e_am, e_live, tmp_df, copyright=F)
+  system(paste0('dot -Tsvg temp.gv > ', output_directory, 'images/', am_filename_svg))
+  system(paste0('rm temp.gv'))
+}
+
 source('graphviz_output.R')
-cat(' - Creating images in web-site/images ...\n')
+cat(' - Creating images in ', output_directory, ' ...\n')
+system(paste0('mkdir ', output_directory, 'images'))
+
 for (i in as.numeric(rownames(df))) {
    am_name <- df$amenity_type[i]
-   am_filename_png <- paste0('osm-', am_name, '.svg')
-   am_filename_png <- sub(';', '\\;', am_filename_png, fixed=T)
-   cat('    web-site/images/', am_filename_png, '\n', sep = '')
 
    n_threshold = 5
    lr_threshold = ifelse(e_live$count_for(am_name) > 500000, 5.0/100, 1.0/100)
@@ -112,11 +133,8 @@ for (i in as.numeric(rownames(df))) {
         tmp <- extract_one(e_am, e_live, e_tr, am_name, n_threshold, lr_threshold)
       }
    }
-   cat ('    Reduced to ', n_threshold, '  rows:', nrow(tmp), '\n')
-
-   output_graphviz_file('temp.gv', e_am, e_live, tmp, copyright=F)
-   #system(paste0('dot -Tpng temp.gv > ../web-site/images/', am_filename_png))
-   system(paste0('dot -Tsvg temp.gv > ../web-site/images/', am_filename_png))
+   #cat ('    Reduced to ', n_threshold, '  rows:', nrow(tmp), '\n')
+   write_svg(am_name, tmp)
 }
 
 cat(' - Done.\n')

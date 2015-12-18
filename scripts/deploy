@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# TODO: check that image files exist in the web-site directory
+# The below assumes that the extracted data is in the ~/temp-data/ directory
+
+cd src
+rm -rf ~/temp-data/web-data
+mkdir -p ~/temp-data/web-data
+Rscript create_images.R ~/temp-data/ ~/temp-data/web-data/
+cd ..
 
 git branch -d gh-pages
 git checkout --orphan gh-pages
@@ -11,12 +17,18 @@ git rm -r docs --force
 git rm -r osm-data --force
 git rm -r scripts --force
 git rm 'README.md' --force
-echo Try [matiasdahl.github.io/osm-tag-dynamics/](http://matiasdahl.github.io/osm-tag-dynamics/) > README.md
+echo Try "[matiasdahl.github.io/osm-tag-dynamics/](http://matiasdahl.github.io/osm-tag-dynamics/)" > README.md
 git add README.md
 
-# move website in ./public to root
-git mv web-site/* .
-git mv web-site/images .
+mv ~/temp-data/web-data/am_data.txt .
+git add am_data.txt
+
+mv ~/temp-data/images .
+git add images/*.svg
+
+git mv web-site/index.html .
+git mv web-site/main.js .
+git mv web-site/style.css .
 
 git commit -m "Update of gh-pages"
 git push origin gh-pages
