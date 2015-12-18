@@ -16,7 +16,7 @@ var process_am_data = function(file_content) {
     $(this).click(function(e) {
       $('li').removeClass('active');
       $(this).addClass('active');
-      $('img').attr('src', 'images/osm-' + tagname + '.svg');
+      $('#selectedimage').attr('src', 'images/osm-' + tagname + '.svg');
     });
     if (tagname === 'bench') {
       $(this).addClass('active');
