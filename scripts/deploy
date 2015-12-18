@@ -26,11 +26,11 @@ git rm 'README.md' --force
 echo Try "[matiasdahl.github.io/osm-tag-dynamics/](http://matiasdahl.github.io/osm-tag-dynamics/)" > README.md
 git add README.md
 
-mv ~/temp-data/web-data/am_data.txt .
+cp ~/temp-data/web-data/am_data.txt .
 git add am_data.txt
 
 mkdir images
-mv ~/temp-data/images/*.svg images
+cp ~/temp-data/web-data/images/*.svg images
 git add images/*.svg
 
 git mv web-site/index.html .
