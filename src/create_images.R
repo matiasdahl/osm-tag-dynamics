@@ -41,7 +41,7 @@ cat(' - Loading e_am ...\n')
 #  Load amenity data and compute total amenity counts per `amenity_type`
 #
 source('amenity_counts.R')
-e_am <- cache_op('all_amenity_data.rds',
+e_am <- cache_op(paste0(input_directory, 'all_amenity_data.rds'),
                  function() {
                     load_amenity_data(input_directory)
                 })
@@ -51,7 +51,7 @@ e_am <- cache_op('all_amenity_data.rds',
 #
 cat(' - Loading e_live ...\n')
 source('live_count.R')
-e_live <- cache_op('amenities_live.rds',
+e_live <- cache_op(paste0(input_directory, 'amenities_live.rds'),
                  function() { get_live_amenities(e_am) })
 
 #
@@ -59,7 +59,7 @@ e_live <- cache_op('amenities_live.rds',
 #
 cat(' - Loading e_tr ...\n')
 source('tag_transitions.R')
-e_tr <- cache_op('transition_data.rds',
+e_tr <- cache_op(paste0(input_directory, 'transition_data.rds'),
                  function() { compute_tag_transitions(e_am) })
 
 cat(' - Extending e_tr ...\n')
@@ -117,7 +117,6 @@ write_svg <- function(am_name, tmp_df) {
 
 source('graphviz_output.R')
 cat(' - Creating images in ', output_directory, ' ...\n')
-system(paste0('mkdir ', output_directory, 'images'))
 
 for (i in as.numeric(rownames(df))) {
    am_name <- df$amenity_type[i]

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# Note: the below assumes that the extracted data is in
+# the ~/temp-data/ directory
+#
+
+cd src
+
+rm -rf ~/temp-data/web-data
+mkdir -p ~/temp-data/web-data
+mkdir -p ~/temp-data/web-data/images
+
+Rscript create_images.R ~/temp-data/ ~/temp-data/web-data/
+
+cd ..

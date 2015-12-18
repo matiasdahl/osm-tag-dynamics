@@ -1,24 +1,16 @@
 #!/bin/bash
 
-#
-# Note: the below assumes that the extracted data is in
-# the ~/temp-data/ directory
-#
-cd src
-rm -rf ~/temp-data/web-data
-mkdir -p ~/temp-data/web-data
-Rscript create_images.R ~/temp-data/ ~/temp-data/web-data/
-cd ..
-
+## TODO: Ensure that images are present in ~/temp-data/web-data/
 
 # delete any exiting gh-pages branch
-git branch -d gh-pages
+git branch -D gh-pages
 git push origin --delete gh-pages
 
 git checkout --orphan gh-pages
 
 # remove extra files not needed by the website
 git rm -r src --force
+rm -rf src
 git rm -r docs --force
 git rm -r osm-data --force
 git rm -r scripts --force
@@ -37,6 +29,7 @@ git mv web-site/index.html .
 git mv web-site/main.js .
 git mv web-site/style.css .
 git rm -r web-site --force
+rm -rf web-site
 
 git commit -m "Update of gh-pages"
 git push origin gh-pages
