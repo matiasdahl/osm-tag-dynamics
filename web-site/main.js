@@ -26,7 +26,7 @@ var process_am_data = function(file_content) {
       $('li').removeClass('active');
       $(this).addClass('active');
       window.history.pushState("", "", 'index.html?amenity=' + tagname);
-      $('#selectedimage').attr('src', 'images/osm-' + tagname + '.svg');
+      $('#selectedimage').attr('data', 'images/osm-' + tagname + '.svg');
     });
   });
 

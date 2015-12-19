@@ -106,6 +106,9 @@ extract_one <- function(e_am, e_live, e_tr, am_name, n_tre, leaveratio_treshold)
    rbind(df1, df2)
 }
 
+source('graphviz_output.R')
+cat(' - Creating images in ', output_directory, ' ...\n')
+
 write_svg <- function(am_name, tmp_df) {
   am_filename_svg <- paste0('osm-', am_name, '.svg')
   am_filename_svg <- sub(';', '\\;', am_filename_svg, fixed=T)
@@ -115,8 +118,6 @@ write_svg <- function(am_name, tmp_df) {
   system(paste0('rm temp.gv'))
 }
 
-source('graphviz_output.R')
-cat(' - Creating images in ', output_directory, ' ...\n')
 
 for (i in as.numeric(rownames(df))) {
    am_name <- df$amenity_type[i]

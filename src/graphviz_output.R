@@ -43,7 +43,7 @@ output_graphviz_file <- function(filename, e_am, e_live, df, copyright=T) {
         circle_data$norm_count <- circle_data$norm_count - min(circle_data$norm_count)
         circle_data$norm_count <- circle_data$norm_count / max(circle_data$norm_count)
     }
-    
+
     normalized_count <- function(am_name) {
         tb <- filter(circle_data, amenity_type == am_name)
         stopifnot(nrow(tb) == 1)
@@ -72,9 +72,17 @@ output_graphviz_file <- function(filename, e_am, e_live, df, copyright=T) {
     for (am in amenities_to_draw) {
 
         write_label <- function(am_name, label_text, more_options) {
+            # Create a link to taginfo for this label?
+            url <- ifelse(e_live$count_for(am_name) > 0,
+                          paste0('URL="https://taginfo.openstreetmap.org/tags/amenity=',
+                                 am_name, '" tooltip="taginfo"'),
+                          'URL="" tooltip="no live elements"')
+
             cat(q0(am_name),
                 ' [label = ', label_text,
-                ' fontname=Helvetica ',
+                url,
+                'target="_top"',
+                'fontname=Helvetica ',
                 paste(more_options, collapse = ' '),
                 ']\n'
             )
@@ -122,13 +130,22 @@ output_graphviz_file <- function(filename, e_am, e_live, df, copyright=T) {
     for (r in as.numeric(rownames(df))) {
         from_amenity <- df$from[r]
         to_amenity <- df$to[r]
+        transition_count <- df$transition_count[r]
         tcr <- df$leave_ratio[r]
+
+        tooltip_text <- q0(paste0(from_amenity, ' → ', to_amenity,
+                           ' has occurred for ', as.character(transition_count),
+                           ' map elements'))
 
         cat(q0(from_amenity),
             ' -> ',
             q0(to_amenity),
-            ' [fontname=Helvetica fontsize=30 label=',
-            q0(percent0(tcr)),
+            ' [fontname=Helvetica ',
+            'labeltooltip=', tooltip_text,
+            'labelURL=""',
+            'tooltip=', tooltip_text,
+            'fontsize=30 ',
+            'label=', q0(percent0(tcr)),
             ifelse(tcr > red_threshold,
                    paste0('color=', red_color, 'fontcolor=', red_color, ' penwidth=1.5'),
                    'color="#444444" fontcolor="#444444" penwidth=1.5'
