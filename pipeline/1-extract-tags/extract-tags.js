@@ -1,13 +1,21 @@
 "use strict";
 
-var js_escape = require('js-string-escape')
+//
+// Modified from:
+//
+//    https://github.com/matiasdahl/osm-extract-amenities
+//
+
+var js_escape = require('js-string-escape');
+var _ = require('underscore');
+var assert = require('assert');
 
 /**
  *  Error messages
  */
 
 var print_usage_and_exit = function() {
-    console.log('Usage: node extract-amenity-type.js [node|way|relation] <osm input-filename>');
+    console.log('Usage: node extract-tags.js [node|way|relation] <osm input-filename>');
     process.exit(1);
 };
 
@@ -21,7 +29,7 @@ var fatal_abort = function() {
  */
 
 var element_type = process.argv[2];
-if (['node', 'way', 'relation'].indexOf(element_type) == -1) print_usage_and_exit();
+if (['node', 'way', 'relation'].indexOf(element_type)<0) print_usage_and_exit();
 
 var filename = process.argv[3];
 if (!filename) print_usage_and_exit();
@@ -30,7 +38,25 @@ if (!filename) print_usage_and_exit();
  *  Program output
  */
 
-console.log(['id', 'version', 'visible', 'sec1970', 'pos1', 'pos2', 'amenity_type', 'name'].join('\t'));
+// Which tags to extract:
+var selected_tags = [
+             'amenity',
+             'barrier', 
+		     'building',
+		     'highway',
+		     'landuse', 
+		     'man_made', 
+		     'natural', 
+		     'railway', 
+		     'shop', 
+		     'sport',
+		     'surface',
+		     'tourism'
+		     ];
+
+var columns = ['id', 'version', 'visible', 'sec1970', 'pos1', 'pos2'];
+
+console.log(columns.concat(selected_tags).join('\t'));
 
 var escape_tabs = function(str) {
     return str.split('\t').join('\\t');
@@ -53,16 +79,19 @@ var position = function (map_obj) {
 };
 
 var output = function(map_obj) {
-    var node_tags = map_obj.tags();
-    var amenity_type = node_tags['amenity'];
     var out_array = [map_obj.id,
                      map_obj.version,
                      map_obj.visible,
                      map_obj.timestamp_seconds_since_epoch,
-                     position(map_obj).join('\t'),
-                     cleanup_string(amenity_type),
-                     cleanup_string(node_tags['name'])];
-    console.log(out_array.join('\t'));
+                     position(map_obj).join('\t')];
+
+    var extract_tag = function(tag) {
+	  	return (map_obj.tags())[tag];
+    };
+
+    var out_tags = selected_tags.map(extract_tag);
+    
+    console.log(out_array.concat(out_tags).join('\t'));
 };
 
 /**
@@ -101,16 +130,32 @@ var osmium = require('osmium');
 var reader = new osmium.Reader(filename);
 var handler = new osmium.Handler();
 
-var last_amenity_id = -1;
+var kl_intersect = function(l1, dict) {
+	return l1.map(function(k) { return k in dict })
+	         .some(function(x) { return (x === true) });
+}
+
+////
+
+var k = {'a':1, 'b': 2, 'c': 3}
+assert(kl_intersect([], k) == false)
+assert(kl_intersect(['x', 'xx', 'y'], k) == false)
+assert(kl_intersect(['x', 'xx', 'b'], k) == true)
+assert(kl_intersect(['x', 'c', 'y'], k) == true)
+
+////
+
+var last_id_of_interest = -1;
 
 var object_handler = function(map_obj) {
     assert_order(map_obj);
 
-    if (last_amenity_id != map_obj.id) {
+    if (last_id_of_interest !== map_obj.id) {
         // Unseen element id.
-        if (!('amenity' in map_obj.tags())) return;
-        // Element is tagged as amenity. Remember its id and output all future versions.
-        last_amenity_id = map_obj.id;
+        if (!kl_intersect(selected_tags, map_obj.tags())) return;
+        // Element is tagged as one of the selected tags. Remember its id 
+        // and output all future versions.
+        last_id_of_interest = map_obj.id;
     }
     output(map_obj);
 };
