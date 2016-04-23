@@ -54,7 +54,7 @@ var selected_tags = [
 		     'tourism'
 		     ];
 
-var columns = ['id', 'version', 'visible', 'sec1970', 'pos1', 'pos2'];
+var columns = ['id', 'version', 'visible', 'sec1970'];
 
 console.log(columns.concat(selected_tags).join('\t'));
 
@@ -67,29 +67,17 @@ var cleanup_string = function(str) {
     return str ? escape_tabs(js_escape(str).trim()) : "";
 };
 
-// Return array with values for the 'pos1' and 'pos2' columns.
-var position = function (map_obj) {
-    if (map_obj.type == 'node') {
-        return [map_obj.lat, map_obj.lon];
-    } else if (map_obj.type == 'way') {
-        var pos1 = map_obj.nodes_count > 0 ? map_obj.node_refs(0) : 'NA';
-        return [pos1, 'NA'];
-    }
-    return ['NA', 'NA'];
-};
-
 var output = function(map_obj) {
     var out_array = [map_obj.id,
                      map_obj.version,
                      map_obj.visible,
-                     map_obj.timestamp_seconds_since_epoch,
-                     position(map_obj).join('\t')];
+                     map_obj.timestamp_seconds_since_epoch];
 
     var extract_tag = function(tag) {
 	  	return (map_obj.tags())[tag];
     };
 
-    var out_tags = selected_tags.map(extract_tag);
+    var out_tags = selected_tags.map(extract_tag).map(cleanup_string);
     
     console.log(out_array.concat(out_tags).join('\t'));
 };
