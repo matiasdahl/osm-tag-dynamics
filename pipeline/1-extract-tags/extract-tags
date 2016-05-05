@@ -42,13 +42,13 @@ md5sum $IN_FILE >> ${OUT_DIR}run-file-info
 #  Extract amenities for nodes, ways and relations.
 #
 touch ${OUT_DIR}run-timing-start-nodes
-node extract-tags.js node $IN_FILE > ${OUT_DIR}amenities-nodes.txt
+node extract-tags.js node $IN_FILE > ${OUT_DIR}nodes.txt
 
 touch ${OUT_DIR}run-timing-start-ways
-node extract-tags.js way $IN_FILE > ${OUT_DIR}amenities-ways.txt
+node extract-tags.js way $IN_FILE > ${OUT_DIR}ways.txt
 
 touch ${OUT_DIR}run-timing-start-relations
-node extract-tags.js relation $IN_FILE > ${OUT_DIR}amenities-relations.txt
+node extract-tags.js relation $IN_FILE > ${OUT_DIR}relations.txt
 
 touch ${OUT_DIR}run-timing-script-done
 
