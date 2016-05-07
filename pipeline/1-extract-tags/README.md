@@ -35,8 +35,11 @@ Install tools needed by the extraction tool:
 ```
 sudo apt-get update
 sudo apt-get install git zip mg nodejs-legacy npm
-npm install osmium js-string-escape underscore
+npm install osmium@0.4.5
+npm install js-string-escape underscore
 ```
+
+See [this issue](https://github.com/osmcode/node-osmium/issues/79) regarding node-osmium version 0.4.5.
 
 Make a directory for the extracted data:
 
