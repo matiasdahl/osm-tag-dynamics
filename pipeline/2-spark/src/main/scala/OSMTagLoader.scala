@@ -14,7 +14,7 @@ object OSMTagLoader {
     StructField("id", StringType, false),
     StructField("version", IntegerType, false),
     StructField("visible", BooleanType, false),
-    //StructField("sec1970", StringType, false),
+    StructField("sec1970", StringType, false),
     StructField("amenity", StringType, true),
     StructField("barrier", StringType, true),
     StructField("building", StringType, true),
@@ -28,7 +28,7 @@ object OSMTagLoader {
     StructField("surface", StringType, true),
     StructField("tourism", StringType, true)))
     
-  def loader(sqlContext: SQLContext, filename: String): DataFrame = {
+  def loadCSV(sqlContext: SQLContext, filename: String): DataFrame = {
     import sqlContext.implicits._
 
     sqlContext.read
@@ -39,7 +39,16 @@ object OSMTagLoader {
       .load(filename)
       .drop("sec1970")
   }
-  
+
+  def prefaceId(prefix: String, df: DataFrame): DataFrame = {
+    val udf_preface = udf((x: String) => prefix + x)
+    df.withColumn("id", udf_preface(col("id")))
+  }
+
+  def loader(sqlContext: SQLContext, prefix: String, filename: String): DataFrame = {
+    prefaceId(prefix, loadCSV(sqlContext, filename))
+  }
+
 }
 
 import OSMTagLoader._
