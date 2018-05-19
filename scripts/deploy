@@ -32,8 +32,6 @@ git rm -r web-site --force
 rm -rf web-site
 
 ## Add tracking code
-sed -e 's|<!-- tracking code -->|<!-- tracking code --><img src="http://explorecolor.com/piwik/piwik.php?idsite=3\&rec=1" style="border:0" alt="" />|g' < index.html > index2.html
-mv index2.html index.html
 git add index.html
 
 git commit -m "Update of gh-pages"
